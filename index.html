@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-signin-client_id" content="">
+    <title>Répondre aux Avis Google</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="filter-container">
+        <!-- Language Selector -->
+        <select id="language-selector">
+            <option value="">français</option>
+        </select>
+
+        <!-- Sign-In Section -->
+        <div class="signin">
+            <div id="client-id-input" class="onSignOut">
+                <label for="client-id">Client ID :</label>
+                <input type="text" id="client-id" name="client-id"
+                    placeholder='IYXxQfH1RwBS9Xs1D0ZUMGi3AJ6br4PbyjEFHgd4HVkIY.apps.googleusercontent.com' />
+            </div>
+            <div id="signin-button-container">
+                <button id="signin-button">Se connecter avec Google</button>
+            </div>
+        </div>
+
+        <!-- Location Selector -->
+        <select id="location-selector" class="onSignIn">
+            <option value="">Sélectionner un établissement</option>
+        </select>
+
+        <!-- Filter by Rating (Star) -->
+        <div class="rating onSignIn">
+            <div id="star1">
+                <input type="checkbox" id="star1" name="rating" value="1" class="star-checkbox" />
+                <label for="star1"><img src="images/1_stars.png" width="60px"></label>
+            </div>
+            <div id="star2">
+                <input type="checkbox" id="star2" name="rating" value="2" class="star-checkbox" />
+                <label for="star2"><img src="images/2_stars.png" width="60px"></label>
+            </div>
+            <div id="star3">
+                <input type="checkbox" id="star3" name="rating" value="3" class="star-checkbox" />
+                <label for="star3"><img src="images/3_stars.png" width="60px"></label>
+            </div>
+            <div id="star4">
+                <input type="checkbox" id="star4" name="rating" value="4" class="star-checkbox" />
+                <label for="star4"><img src="images/4_stars.png" width="60px"></label>
+            </div>
+            <div id="star5">
+                <input type="checkbox" id="star5" name="rating" value="5" class="star-checkbox" />
+                <label for="star5"><img src="images/5_stars.png" width="60px"></label>
+            </div>
+        </div>
+
+        <!-- Filter by Response Status -->
+        <div class="isAnswered onSignIn">
+            <div id="response1">
+                <input type="checkbox" id="response1" name="response" value="1" class="isAnswered-checkbox" />
+                <label for="response1">Avis sans réponse</label>
+            </div>
+            <div id="response2">
+                <input type="checkbox" id="response2" name="response" value="2" class="isAnswered-checkbox" />
+                <label for="response2">Avis avec réponse</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Location Info -->
+    <p id="location-info"></p>
+
+    <!-- Reviews Empty -->
+    <p id="onReviewsEmpty">Aucun avis à afficher</p>
+
+    <!-- Reviews Table -->
+    <table class="onReviewsDisplayed">
+        <thead>
+            <tr>
+                <th>Nombre d'étoiles</th>
+                <th>Avis</th>
+                <th>Réponse</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="reviews-list">
+        </tbody>
+    </table>
+
+    <!-- Load More Reviews Button -->
+    <tfoot>
+        
+        <!-- Loading Section -->
+        <div class="loader-wrapper">
+            <div id="loader"></div>
+        </div>
+
+        <tr id="load-more-button-td">
+            <td colspan="4">
+                <button id="load-more-button" class="onReviewsDisplayed">Charger plus d'avis</button>
+            </td>
+        </tr>
+
+    </tfoot>
+
+    <!-- Config, Google Sign-In and Custom Script -->
+    <script src="config.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

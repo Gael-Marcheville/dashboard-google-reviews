@@ -1,0 +1,174 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #52b3cd;
+}
+
+th,
+td {
+    border: 2px solid #000;
+    padding: 10px;
+    text-align: center;
+}
+
+button,
+#client-id-input,
+#client-id,
+select,
+input[type="checkbox"]+label {
+    background-color: #fff;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #000;
+    text-align: center;
+}
+
+
+button,
+#client-id-input,
+select {
+    padding: 10px 20px;
+}
+
+button,
+#client-id-input,
+select,
+input[type="checkbox"]+label {
+    border: 2px solid #000;
+}
+
+button,
+select,
+input[type="checkbox"]+label {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#client-id-input,
+input[type="checkbox"]+label {
+    margin-bottom: 3px;
+}
+
+#client-id {
+    border: 0px solid #000;
+}
+
+h1 {
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+}
+
+select {
+    -webkit-appearance: none;
+}
+
+button:hover,
+select:hover {
+    background-color: #3e8295;
+    color: #000;
+}
+
+p {
+    font-weight: bold;
+    color: #333;
+}
+
+img {
+    max-width: 100%;
+}
+
+tfoot {
+    text-align: center;
+}
+
+input[type="checkbox"]+label {
+    display: inline-block;
+}
+
+input.star-checkbox[type="checkbox"]+label {
+    height: 20px;
+    width: 100px;
+}
+
+input.isAnswered-checkbox[type="checkbox"]+label {
+    height: 38px;
+    width: 120px;
+}
+
+input[type="checkbox"]+label:hover {
+    background-color: #3e8295;
+}
+
+input[type="checkbox"]:checked+label:hover {
+    background-color: #26505b;
+}
+
+input[type="checkbox"]+label img {
+    max-width: 100%;
+}
+
+input[type="checkbox"]:checked+label {
+    background-color: #52b3cd;
+}
+
+.filter-container {
+    vertical-align: top;
+}
+
+.signin {
+    display: inline-block;
+}
+
+select,
+.rating,
+.signin,
+.isAnswered {
+    vertical-align: top;
+}
+
+#onReviewsEmpty,
+.onReviewsDisplayed,
+input[type="checkbox"],
+.onSignIn,
+#load-more-button {
+    display: none;
+}
+
+.onSignOut {
+    display: inline-block;
+}
+
+#load-more-button {
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.loader-wrapper {
+    text-align: center;
+}
+
+#loader {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #000;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    margin: 50px auto;
+    display: none;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

@@ -1,0 +1,101 @@
+{
+    "fr": {
+        "name": "français",
+        "code": "fr",
+        "head": {
+            "title": "Répondre aux Avis Google"
+        },
+        "body": {
+            "sign_in": "Se connecter avec Google",
+            "sign_out": "Se déconnecter",
+            "location_select": "Sélectionnez un établissement",
+            "is_not_answered_label": "Avis sans réponse",
+            "is_answered_label": "Avis avec réponse",
+            "is_empty": "Aucun avis à afficher",
+            "location_info_text": "Nombre d'avis : [numberOfReviews] - Note moyenne : [averageRating]",
+            "table": {
+                "header": {
+                    "col_1": "Nombre d'étoiles",
+                    "col_2": "Avis",
+                    "col_3": "Réponse",
+                    "col_4": "Actions"
+                },
+                "actions": {
+                    "send": "Envoyer ma réponse",
+                    "edit": "Modifier ma réponse",
+                    "cancel": "Annuler la modification"
+                },
+                "reviewer": {
+                    "anonymous": "Anonyme"
+                },
+                "load_more": "Charger plus d'avis"
+            }
+        }
+    },
+    "en": {
+        "name": "english",
+        "code": "en",
+        "head": {
+            "title": "Reply to Google Reviews"
+        },
+        "body": {
+            "sign_in": "Sign in with Google",
+            "sign_out": "Sign out",
+            "location_select": "Select a location",
+            "is_not_answered_label": "Reviews without answer",
+            "is_answered_label": "Reviews with answer",
+            "is_empty": "No reviews to display",
+            "location_info_text": "Number of reviews: [numberOfReviews] - Average rating: [averageRating]",
+            "table": {
+                "header": {
+                    "col_1": "Number of stars",
+                    "col_2": "Review",
+                    "col_3": "Answer",
+                    "col_4": "Actions"
+                },
+                "actions": {
+                    "send": "Send my answer",
+                    "edit": "Edit my answer",
+                    "cancel": "Cancel the modification"
+                },
+                "review": {
+                    "anonymous": "Anonymous"
+                },
+                "load_more": "Load more reviews"
+            }
+        }
+    },
+    "es": {
+        "name": "español",
+        "code": "es",
+        "head": {
+            "title": "Responder a las reseñas de Google"
+        },
+        "body": {
+            "sign_in": "Iniciar sesión con Google",
+            "sign_out": "Cerrar sesión",
+            "location_select": "Selecciona una ubicación",
+            "is_not_answered_label": "Reseñas sin respuesta",
+            "is_answered_label": "Reseñas con respuesta",
+            "is_empty": "No hay reseñas para mostrar",
+            "location_info_text": "Número de reseñas: [numberOfReviews] - Calificación promedio: [averageRating]",
+            "table": {
+                "header": {
+                    "col_1": "Número de estrellas",
+                    "col_2": "Reseña",
+                    "col_3": "Respuesta",
+                    "col_4": "Acciones"
+                },
+                "actions": {
+                    "send": "Enviar mi respuesta",
+                    "edit": "Editar mi respuesta",
+                    "cancel": "Cancelar la modificación"
+                },
+                "review": {
+                    "anonymous": "Anónimo"
+                },
+                "load_more": "Cargar más reseñas"
+            }
+        }
+    }
+}
