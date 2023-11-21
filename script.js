@@ -161,10 +161,6 @@ function updateReviewsList(starsDisplayed, isAnswered) {
         }
     }
     if (isEmpty) {
-        var elements = document.querySelectorAll('.onReviewsDisplayed');
-        for (var i = 0; i < elements.length; i++) {
-            elements[i].style.display = "none";
-        }
         document.getElementById("onReviewsEmpty").style.display = "block";
     }
     else {
@@ -308,6 +304,15 @@ function updateReviewWhenAnswered(reviewId, responseText) {
     }
 }
 
+function loadingReviews(){
+    var elements = document.querySelectorAll('.onReviewsDisplayed');
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].style.display = "none";
+    }
+    document.getElementById("onReviewsEmpty").style.display = "none";
+    document.getElementById("loader").style.display = "block";
+}
+
 /*
 ----------------------------------------------
 API calls
@@ -332,7 +337,21 @@ function getAccountIdThenGetLocation(accessToken) {
         })
         .then(data => {
             if (data.accounts && data.accounts.length > 0) {
-                currentAccountId = data.accounts[0].name;
+                document.getElementById("group-location-selector").innerHTML = '';
+                const personnalAccountId = data.accounts.find(account => account.type === "PERSONAL").name;
+                const option = document.createElement("option");
+                option.value = personnalAccountId;
+                option.textContent = language.body.is_not_group;
+                document.getElementById("group-location-selector").appendChild(option);
+                for (let i = 0; i < data.accounts.length; i++) {
+                    if (data.accounts[i].type === "LOCATION_GROUP") {
+                        const option = document.createElement("option");
+                        option.value = data.accounts[i].name;
+                        option.textContent = data.accounts[i].accountName;
+                        document.getElementById("group-location-selector").appendChild(option);
+                    }
+                }
+                currentAccountId = personnalAccountId;
                 getLocations(accessToken, currentAccountId);
             } else {
                 document.getElementById("loader").style.display = "none";
@@ -348,8 +367,13 @@ function getAccountIdThenGetLocation(accessToken) {
 // To get the location ID
 function getLocations(accessToken, accountId) {
 
+    loadingReviews();
+
     document.getElementById("loader").style.display = "block";
     const readMask = 'name,title';
+
+    const locationSelector = document.getElementById("location-selector");
+    locationSelector.innerHTML = '<option value="">' + language.body.location_select + '</option>';
 
     fetch(`https://mybusinessbusinessinformation.googleapis.com/v1/${accountId}/locations?readMask=${readMask}`, {
         method: 'GET',
@@ -366,7 +390,24 @@ function getLocations(accessToken, accountId) {
         })
         .then(data => {
 
-            const locationSelector = document.getElementById("location-selector");
+            // si aucun établissement n'a été trouvé
+            if (!data.locations || data.locations.length === 0) {
+                locationSelector.innerHTML = '<option value="">' + language.body.no_location_found + '</option>';
+            }
+            else {
+                locationSelector.innerHTML = '';
+            }
+
+            // trie des établissements par ordre alphabétique
+            data.locations.sort((a, b) => {
+                if (a.title < b.title) {
+                    return -1;
+                }
+                if (a.title > b.title) {
+                    return 1;
+                }
+                return 0;
+            });
 
             data.locations.forEach(location => {
                 const option = document.createElement("option");
@@ -374,6 +415,7 @@ function getLocations(accessToken, accountId) {
                 option.textContent = location.title;
                 locationSelector.appendChild(option);
             });
+            getGoogleReviews(accessToken, data.locations[0].name, accountId);
         })
         .catch(error => {
             document.getElementById("loader").style.display = "none";
@@ -383,6 +425,8 @@ function getLocations(accessToken, accountId) {
 
 // To get the reviews
 function getGoogleReviews(access_token, locationId, accountId) {
+
+    loadingReviews();
 
     document.getElementById("loader").style.display = "block";
 
@@ -577,6 +621,8 @@ function changeLanguage(language_code) {
                 document.getElementById("location-info").textContent = infoText;
             }
             else { document.getElementById("signin-button").textContent = language.body.sign_in; }
+            const groupLocationSelector = document.getElementById("group-location-selector");
+            groupLocationSelector.getElementsByTagName("option")[0].textContent = language.body.is_not_group;
             const locationSelector = document.getElementById("location-selector");
             locationSelector.getElementsByTagName("option")[0].textContent = language.body.location_select;
             const isAnsweredLabels = document.querySelectorAll('.isAnswered label');
@@ -648,6 +694,12 @@ clientIdInput.style.width = (placeholderLength > textLength ? placeholderLength 
 // filters initialization
 initializeFilter('.rating input[type="checkbox"]', starsDisplayed, handleStarCheckboxChange);
 initializeFilter('.isAnswered input[type="checkbox"]', isAnswered, handleIsAnsweredCheckboxChange);
+
+// group location selector initialization
+document.getElementById("group-location-selector").addEventListener("change", function () {
+    currentAccountId = this.value;
+    getLocations(accessToken, currentAccountId);
+});
 
 // location selector initialization
 document.getElementById("location-selector").addEventListener("change", function () {
