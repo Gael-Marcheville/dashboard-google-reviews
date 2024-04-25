@@ -13,11 +13,9 @@ const PORT = 3000; // Choisis un port disponible
 const WEB_PORT = 8000; // Port pour le site web
 const STATIC_DIR = path.join(__dirname, '/'); // Dossier contenant les fichiers statiques
 
-let url_server = 'http://localhost:3000';
 let url_website = 'http://localhost:8000';
 
 if (config) {
-    url_server = config.url_server;
     url_website = config.url_website;
 }
 
@@ -25,13 +23,13 @@ app.use(express.json());
 
 //configure two origins for cors
 const corsOptions = {
-    origin: [url_website, url_server],
+    origin: [url_website],
     optionsSuccessStatus: 200
 }
 app.use(cors(corsOptions));
 
 // Endpoint pour faire la requête vers les API Google
-app.post('/proxy', async (req, res) => {
+app.post('/', async (req, res) => {
     const { url, method, headers, body } = req.body;
 
     try {
