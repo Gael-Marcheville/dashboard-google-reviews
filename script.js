@@ -128,7 +128,7 @@ function cancelEditResponse(reviewId, responseText) {
 }
 
 // To display the location info (number of reviews and average rating)
-function displayLocationInfo() {
+function displayLocationInfo(numberOfReviews, averageRating) {
     const locationInfo = document.getElementById("location-info");
     infoText = language.body.location_info_text;
     infoText = infoText.replace("[numberOfReviews]", numberOfReviews);
