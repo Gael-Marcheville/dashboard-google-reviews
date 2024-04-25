@@ -13,8 +13,6 @@ if (config) {
     url_server = config.url_server;
 }
 
-console.log(url_server);
-
 let accessToken;
 let currentLocationId;
 let currentAccountId;
