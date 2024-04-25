@@ -126,13 +126,12 @@ function cancelEditResponse(reviewId, responseText) {
 }
 
 // To display the location info (number of reviews and average rating)
-function displayLocationInfo(numberOfReviews, averageRating) {
+function displayLocationInfo() {
     const locationInfo = document.getElementById("location-info");
     infoText = language.body.location_info_text;
     infoText = infoText.replace("[numberOfReviews]", numberOfReviews);
     infoText = infoText.replace("[averageRating]", averageRating);
-    const locationInfoText = infoText;
-    locationInfo.textContent = locationInfoText;
+    locationInfo.textContent = infoText;
     locationInfo.style.display = "block";
 }
 
@@ -482,7 +481,9 @@ function getGoogleReviews(access_token, locationId, accountId) {
         document.getElementById("loader").style.display = "none";
         displayReviews(data.reviews);
         updateReviewsList(starsDisplayed, isAnswered);
-        displayLocationInfo(data.totalReviewCount, data.averageRating);
+        numberOfReviews = data.totalReviewCount;
+        averageRating = data.averageRating;
+        displayLocationInfo();
     })
     .catch(error => {
         document.getElementById("loader").style.display = "none";
@@ -661,16 +662,15 @@ function changeLanguage(language_code) {
             document.title = language.head.title;
             if (signin) {
                 document.getElementById("signin-button").textContent = language.body.sign_out;
-                infoText = language.body.location_info_text;
-                infoText = infoText.replace("[numberOfReviews]", numberOfReviews);
-                infoText = infoText.replace("[averageRating]", averageRating);
-                document.getElementById("location-info").textContent = infoText;
+                displayLocationInfo();
             }
             else { document.getElementById("signin-button").textContent = language.body.sign_in; }
             const groupLocationSelector = document.getElementById("group-location-selector");
             groupLocationSelector.getElementsByTagName("option")[0].textContent = language.body.is_not_group;
-            const locationSelector = document.getElementById("location-selector");
-            locationSelector.getElementsByTagName("option")[0].textContent = language.body.location_select;
+            if (!currentLocationId) {
+                const locationSelector = document.getElementById("location-selector");
+                locationSelector.getElementsByTagName("option")[0].textContent = language.body.location_select;
+            }
             const isAnsweredLabels = document.querySelectorAll('.isAnswered label');
             isAnsweredLabels[0].textContent = language.body.is_answered_label;
             isAnsweredLabels[1].textContent = language.body.is_not_answered_label;
