@@ -3,11 +3,14 @@
 let CLIENT_ID = '';
 let starsDisplayed = [1, 2, 3, 4, 5];
 let isAnswered = [1, 1];
+let default_client_id = '';
+let url_server = 'localhost:3000';
 
 if (config) {
-    CLIENT_ID = config.CLIENT_ID;
     starsDisplayed = config.starsDisplayedFilter;
     isAnswered = config.isAnsweredFilter;
+    default_client_id = config.default_client_id;
+    url_server = config.url_server;
 }
 
 let accessToken;
@@ -323,45 +326,54 @@ API calls
 function getAccountIdThenGetLocation(accessToken) {
 
     document.getElementById("loader").style.display = "block";
-    fetch(`https://mybusinessbusinessinformation.googleapis.com/v1/accounts`, {
-        method: 'GET',
+
+    fetch(url_server, {
+        method: 'POST',
+        mode: 'cors',
         headers: {
-            'Authorization': `Bearer ${accessToken}`
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            url: `https://mybusinessbusinessinformation.googleapis.com/v1/accounts`,
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+            },
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Réponse non valide');
+        }
+        return response.json()
+    })
+    .then(data => {
+        if (data.accounts && data.accounts.length > 0) {
+            document.getElementById("group-location-selector").innerHTML = '';
+            const personnalAccountId = data.accounts.find(account => account.type === "PERSONAL").name;
+            const option = document.createElement("option");
+            option.value = personnalAccountId;
+            option.textContent = "Aucun Groupe";
+            document.getElementById("group-location-selector").appendChild(option);
+            for (let i = 0; i < data.accounts.length; i++) {
+                if (data.accounts[i].type === "LOCATION_GROUP") {
+                    const option = document.createElement("option");
+                    option.value = data.accounts[i].name;
+                    option.textContent = data.accounts[i].accountName;
+                    document.getElementById("group-location-selector").appendChild(option);
+                }
+            }
+            currentAccountId = personnalAccountId;
+            getLocations(accessToken, currentAccountId);
+        } else {
+            document.getElementById("loader").style.display = "none";
+            console.error('Aucun compte n\'a été trouvé.');
         }
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Réponse non valide');
-            }
-            return response.json()
-        })
-        .then(data => {
-            if (data.accounts && data.accounts.length > 0) {
-                document.getElementById("group-location-selector").innerHTML = '';
-                const personnalAccountId = data.accounts.find(account => account.type === "PERSONAL").name;
-                const option = document.createElement("option");
-                option.value = personnalAccountId;
-                option.textContent = language.body.is_not_group;
-                document.getElementById("group-location-selector").appendChild(option);
-                for (let i = 0; i < data.accounts.length; i++) {
-                    if (data.accounts[i].type === "LOCATION_GROUP") {
-                        const option = document.createElement("option");
-                        option.value = data.accounts[i].name;
-                        option.textContent = data.accounts[i].accountName;
-                        document.getElementById("group-location-selector").appendChild(option);
-                    }
-                }
-                currentAccountId = personnalAccountId;
-                getLocations(accessToken, currentAccountId);
-            } else {
-                document.getElementById("loader").style.display = "none";
-                console.error('Aucun compte n\'a été trouvé.');
-            }
-        })
-        .catch(error => {
-            document.getElementById("loader").style.display = "none";
-            console.error('Une erreur s\'est produite lors de la récupération des établissements :', error);
-        });
+    .catch(error => {
+        document.getElementById("loader").style.display = "none";
+        console.error('Une erreur s\'est produite lors de la récupération des établissements :', error);
+    });
 }
 
 // To get the location ID
@@ -371,56 +383,69 @@ function getLocations(accessToken, accountId) {
 
     document.getElementById("loader").style.display = "block";
     const readMask = 'name,title';
+    const pageSize = 100;
 
     const locationSelector = document.getElementById("location-selector");
-    locationSelector.innerHTML = '<option value="">' + language.body.location_select + '</option>';
+    locationSelector.innerHTML = '<option value="">Sélectionner un établissement</option>';
 
-    fetch(`https://mybusinessbusinessinformation.googleapis.com/v1/${accountId}/locations?readMask=${readMask}`, {
-        method: 'GET',
+
+    // get locationss
+    fetch(url_server, {
+        method: 'POST',
+        mode: 'cors',
         headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            url: `https://mybusinessbusinessinformation.googleapis.com/v1/${accountId}/locations?readMask=${readMask}&pageSize=${pageSize}`,
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+            },
+        }),
     })
-        .then(response => {
-            document.getElementById("loader").style.display = "none";
-            if (!response.ok) {
-                throw new Error('Réponse non valide');
-            }
-            return response.json();
-        })
-        .then(data => {
 
-            // si aucun établissement n'a été trouvé
-            if (!data.locations || data.locations.length === 0) {
-                locationSelector.innerHTML = '<option value="">' + language.body.no_location_found + '</option>';
-            }
-            else {
-                locationSelector.innerHTML = '';
-            }
+    .then(response => {
+        document.getElementById("loader").style.display = "none";
+        if (!response.ok) {
+            throw new Error('Réponse non valide');
+        }
+        return response.json();
+    })
+    .then(data => {
 
-            // trie des établissements par ordre alphabétique
-            data.locations.sort((a, b) => {
-                if (a.title < b.title) {
-                    return -1;
-                }
-                if (a.title > b.title) {
-                    return 1;
-                }
-                return 0;
-            });
+        // si aucun établissement n'a été trouvé
+        if (!data.locations || data.locations.length === 0) {
+            locationSelector.innerHTML = '<option value="">Aucun établissement trouvé</option>';
+        }
+        else {
+            locationSelector.innerHTML = '';
+        }
 
-            data.locations.forEach(location => {
-                const option = document.createElement("option");
-                option.value = location.name;
-                option.textContent = location.title;
-                locationSelector.appendChild(option);
-            });
-            getGoogleReviews(accessToken, data.locations[0].name, accountId);
-        })
-        .catch(error => {
-            document.getElementById("loader").style.display = "none";
-            console.error('Une erreur s\'est produite lors de la récupération des établissements :', error);
+        // trie des établissements par ordre alphabétique
+        data.locations.sort((a, b) => {
+            if (a.title < b.title) {
+                return -1;
+            }
+            if (a.title > b.title) {
+                return 1;
+            }
+            return 0;
         });
+
+        data.locations.forEach(location => {
+            const option = document.createElement("option");
+            option.value = location.name;
+            option.textContent = location.title;
+            locationSelector.appendChild(option);
+        });
+        currentLocationId = data.locations[0].name;
+        getGoogleReviews(accessToken, currentLocationId, accountId);
+    })
+    .catch(error => {
+        document.getElementById("loader").style.display = "none";
+        console.error('Une erreur s\'est produite lors de la récupération des établissements :', error);
+    });
 }
 
 // To get the reviews
@@ -430,33 +455,39 @@ function getGoogleReviews(access_token, locationId, accountId) {
 
     document.getElementById("loader").style.display = "block";
 
-    fetch(`https://mybusiness.googleapis.com/v4/${accountId}/${locationId}/reviews`, {
-        method: 'GET',
+    fetch(url_server, {
+        method: 'POST',
+        mode: 'cors',
         headers: {
-            'Authorization': `Bearer ${access_token}`
-        }
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            url: `https://mybusiness.googleapis.com/v4/${accountId}/${locationId}/reviews`,
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${access_token}`,
+            },
+        }),
     })
-        .then(response => response.json())
-        .then(data => {
-            loadMoreButton = document.getElementById("load-more-button");
-            if (data.nextPageToken) {
-                pageToken = `&pageToken=${data.nextPageToken}`;
-                loadMoreButton.style.display = "block";
+    .then(response => response.json())
+    .then(data => {
+        loadMoreButton = document.getElementById("load-more-button");
+        if (data.nextPageToken) {
+            pageToken = `&pageToken=${data.nextPageToken}`;
+            loadMoreButton.style.display = "block";
 
-            } else {
-                loadMoreButton.style.display = "none";
-            }
-            document.getElementById("loader").style.display = "none";
-            displayReviews(data.reviews);
-            updateReviewsList(starsDisplayed, isAnswered);
-            numberOfReviews = data.totalReviewCount;
-            averageRating = data.averageRating;
-            displayLocationInfo();
-        })
-        .catch(error => {
-            document.getElementById("loader").style.display = "none";
-            console.error('Erreur lors de la récupération des avis :', error);
-        });
+        } else {
+            loadMoreButton.style.display = "none";
+        }
+        document.getElementById("loader").style.display = "none";
+        displayReviews(data.reviews);
+        updateReviewsList(starsDisplayed, isAnswered);
+        displayLocationInfo(data.totalReviewCount, data.averageRating);
+    })
+    .catch(error => {
+        document.getElementById("loader").style.display = "none";
+        console.error('Erreur lors de la récupération des avis :', error);
+    });
 
 }
 
@@ -465,30 +496,38 @@ function getMoreGoogleReviews(access_token, locationId, accountId) {
 
     document.getElementById("loader").style.display = "block";
 
-    fetch(`https://mybusiness.googleapis.com/v4/${accountId}/${locationId}/reviews?pageToken=${pageToken}`, {
-        method: 'GET',
+    fetch(url_server, {
+        method: 'POST',
+        mode: 'cors',
         headers: {
-            'Authorization': `Bearer ${access_token}`
-        }
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            url: `https://mybusiness.googleapis.com/v4/${accountId}/${locationId}/reviews?&pageToken=${pageToken}`,
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${access_token}`,
+            },
+        }),
     })
-        .then(response => response.json())
-        .then(data => {
-            loadMoreButton = document.getElementById("load-more-button");
-            if (data.nextPageToken) {
-                pageToken = `&pageToken=${data.nextPageToken}`;
-                loadMoreButton.style.display = "block";
+    .then(response => response.json())
+    .then(data => {
+        loadMoreButton = document.getElementById("load-more-button");
+        if (data.nextPageToken) {
+            pageToken = `&pageToken=${data.nextPageToken}`;
+            loadMoreButton.style.display = "block";
 
-            } else {
-                loadMoreButton.style.display = "none";
-            }
-            document.getElementById("loader").style.display = "none";
-            displayReviews(data.reviews, false);
-            updateReviewsList(starsDisplayed, isAnswered);
-        })
-        .catch(error => {
-            document.getElementById("loader").style.display = "none";
-            console.error('Erreur lors de la récupération des avis :', error);
-        });
+        } else {
+            loadMoreButton.style.display = "none";
+        }
+        document.getElementById("loader").style.display = "none";
+        displayReviews(data.reviews, false);
+        updateReviewsList(starsDisplayed, isAnswered);
+    })
+    .catch(error => {
+        document.getElementById("loader").style.display = "none";
+        console.error('Erreur lors de la récupération des avis :', error);
+    });
 
 }
 
@@ -498,26 +537,33 @@ function respondToReview(reviewId, locationId, accountId, responseText, accessTo
     const responsePayload = {
         comment: responseText
     };
-
-    fetch(`https://mybusiness.googleapis.com/v4/${accountId}/${locationId}/reviews/${reviewId}/reply`, {
-        method: 'PUT',
+    
+    fetch(url_server, {
+        method: 'POST',
         headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
-        body: JSON.stringify(responsePayload)
+        body: JSON.stringify({
+            url: `https://mybusiness.googleapis.com/v4/${accountId}/${locationId}/reviews/${reviewId}/reply`,
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: responsePayload,
+        }),
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data && data.comment && data.updateTime) {
-                updateReviewWhenAnswered(reviewId, data.comment);
-            } else {
-                console.error('Erreur lors de l\'envoi de la réponse :', data);
-            }
-        })
-        .catch(error => {
-            console.error('Erreur lors de l\'envoi de la réponse :', error);
-        });
+    .then(response => response.json())
+    .then(data => {
+        if (data && data.comment && data.updateTime) {
+            updateReviewWhenAnswered(reviewId, data.comment);
+        } else {
+            console.error('Erreur lors de l\'envoi de la réponse :', data);
+        }
+    })
+    .catch(error => {
+        console.error('Erreur lors de l\'envoi de la réponse :', error);
+    });
 }
 
 /*
@@ -686,7 +732,7 @@ function initializeFilter(selector, values, changeHandler) {
 
 // client ID initialization
 clientIdInput = document.getElementById("client-id");
-clientIdInput.value = CLIENT_ID;
+clientIdInput.value = default_client_id;
 placeholderLength = clientIdInput.placeholder.length;
 textLength = clientIdInput.value.length;
 clientIdInput.style.width = (placeholderLength > textLength ? placeholderLength : textLength) + "ch";
