@@ -43,7 +43,8 @@ To run this project, you will need:
 
 ### Deploy the project on Koyeb
 1. Fork the repo
-2. Create a new Web App on Koyeb :
+2. Create an account on [Koyeb](https://www.koyeb.com/) if you don't have one yet.
+3. Create a new Web Service on Koyeb (first is free).
 - Deployement method : Github
 - Repository : your forked repo
 - Build command : 
@@ -58,10 +59,11 @@ To run this project, you will need:
    - 8000 mapped to /
    - 3000 mapped to /proxy
 - Deploy, please note the URL of your app
-3. OPTIONAL : Fulfill `config.js` with your Client ID and the values of star rating and answered filters you want to pre-fill in the app. By default, the app will display all reviews. You can fulfill or give another Client ID at the start of the app.
-3. Fulfill url_website in `config.js` with the URL of your app and git push the change.
-4. Redeploy the project on Koyeb, it can be already done if you have set up the auto-deploy on push. 
-5. go to the URL of your app. You should see the app !
+- Let the other settings by default
+4. Fulfill url_website in `config.js` with the URL of your koyeb app and git push the change.
+5. OPTIONAL : Fulfill `config.js` with your Client ID and the values of star rating and answered filters you want to pre-fill in the app. By default, the app will display all reviews. You can fulfill or give another Client ID at the start of the app.
+6. Redeploy the project on Koyeb, it can be already done if you have set up the auto-deploy on push. 
+7. go to the URL of your app. You should see the app !
 
 ## To do more with this project
 
