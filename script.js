@@ -1,7 +1,5 @@
 // Author: Gaël Marcheville
 
-import { url } from "inspector";
-
 let CLIENT_ID = '';
 let starsDisplayed = [1, 2, 3, 4, 5];
 let isAnswered = [1, 1];

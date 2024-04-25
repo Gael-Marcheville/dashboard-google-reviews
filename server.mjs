@@ -23,7 +23,7 @@ app.use(express.json());
 
 //configure two origins for cors
 const corsOptions = {
-    origin: [url_website],
+    origin: [url_website, 'http://localhost:8000'],
     optionsSuccessStatus: 200
 }
 app.use(cors(corsOptions));
