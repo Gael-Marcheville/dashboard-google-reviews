@@ -31,7 +31,7 @@ To run this project, you will need:
    ```sh
    npm install
    ```
-5 Run the project
+5. Run the project
    ```sh
    node server.mjs
    ```
