@@ -39,7 +39,7 @@ To run this project, you will need:
    ```sh
    node server.mjs
    ```
-6. Go to the URL `http://localhost:8080`  in your browser. You should see the app !
+6. Go to the URL `http://localhost:8000`  in your browser. You should see the app !
 
 ### Deploy the project on Koyeb
 1. Fork the repo
