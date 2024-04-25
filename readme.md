@@ -18,14 +18,18 @@ To run this project, you will need:
 3. An access for your project to the [Google My Business API](https://developers.google.com/my-business/content/prereqs?)
 4. The [Google My Business API](https://console.cloud.google.com/marketplace/product/google/mybusiness.googleapis.com), [My Business Account Management API](https://developers.google.com/my-business/reference/accountmanagement/rest?), and
 [Google My Business Business Information](https://developers.google.com/my-business/reference/businessinformation) enabled for your project
-5. A [Client ID](https://console.cloud.google.com/apis/credentials) for your project. Don't forget to add your domain you will be running the project on to the list of authorized JavaScript origins. For example, if you will be running the project on `http://localhost:8080`, you will need to add `http://localhost:8080` to the list of authorized JavaScript origins.
+5. A [Client ID](https://console.cloud.google.com/apis/credentials) for your project. Don't forget to add your domain you will be running the project on to the list of authorized JavaScript origins. For example, if you will be running the project on `http://localhost:8000`, you will need to add `http://localhost` to the list of authorized JavaScript origins.
 
 ### Local installation
 1. Clone the repo
    ```sh
    git clone https://github.com/your_username_/Project-Name.git
    ```
-2. Fulfill url_website in `config.js` with : `http://localhost:8080` 
+2. Fulfill `config.js` with : 
+- ```js
+   url_server: 'http://localhost:3000',
+   url_website: 'localhost/',
+   ```
 3. OPTIONAL : Fulfill `config.js` with your Client ID and the values of star rating and answered filters you want to pre-fill in the app. By default, the app will display all reviews. You can fulfill or give another Client ID at the start of the app.
 4. Build the project
    ```sh
@@ -54,7 +58,10 @@ To run this project, you will need:
    - 8000 mapped to /
    - 3000 mapped to /proxy
 - Deploy, please note the URL of your app
-3. Fulfill url_website in `config.js` with the URL of your app, git push the change and go to the URL of your app. You should see the app !
+3. OPTIONAL : Fulfill `config.js` with your Client ID and the values of star rating and answered filters you want to pre-fill in the app. By default, the app will display all reviews. You can fulfill or give another Client ID at the start of the app.
+3. Fulfill url_website in `config.js` with the URL of your app and git push the change.
+4. Redeploy the project on Koyeb, it can be already done if you have set up the auto-deploy on push. 
+5. go to the URL of your app. You should see the app !
 
 ## To do more with this project
 

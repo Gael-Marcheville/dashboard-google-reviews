@@ -4,7 +4,7 @@ let CLIENT_ID = '';
 let starsDisplayed = [1, 2, 3, 4, 5];
 let isAnswered = [1, 1];
 let default_client_id = '';
-let url_server = 'localhost:3000';
+let url_server = 'http://localhost:3000';
 
 if (config) {
     starsDisplayed = config.starsDisplayedFilter;
